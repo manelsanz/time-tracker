@@ -18,7 +18,7 @@ $task_id = null;
 switch ($_SERVER['REQUEST_URI']) {
     case "/tasks/1":
         $task_id = 1;
-
+        break;
     case "/tasks/2":
         $task_id = 2;
         break;
@@ -36,5 +36,5 @@ $stmt->execute();
 $task = $stmt->fetch();
 
 // echo var_dump($task);
-// header('Content-type: application/json');
+header('Content-type: application/json');
 echo json_encode($task);
