@@ -27,7 +27,7 @@ switch ($_SERVER['REQUEST_URI']) {
         break;
 }
 
-echo $task_id;
+// echo $task_id;
 
 $stmt = $pdo->query("SELECT * FROM tasks WHERE id=:task_id");
 $stmt->execute([":task_id" => $task_id]);
