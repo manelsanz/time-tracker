@@ -13,13 +13,13 @@ $pdo = new PDO("pgsql:" . sprintf(
 
 $task_id = null;
 
-echo $_SERVER['REQUEST_URI'];
+// echo $_SERVER['REQUEST_URI'];
 
 switch ($_SERVER['REQUEST_URI']) {
-    case "/task/1":
+    case "/tasks/1":
         $task_id = 1;
 
-    case "/task/2":
+    case "/tasks/2":
         $task_id = 2;
         break;
     default:
@@ -27,10 +27,12 @@ switch ($_SERVER['REQUEST_URI']) {
         break;
 }
 
-$stmt = $pdo->query("SELECT * FROM tasks WHERE id=?");
-$stmt->execute([$task_id]);
+echo $task_id;
+
+$stmt = $pdo->query("SELECT * FROM tasks WHERE id=:task_id");
+$stmt->execute([":task_id" => $task_id]);
 $task = $stmt->fetch();
 
 // echo var_dump($task);
-header('Content-type: application/json');
+// header('Content-type: application/json');
 echo json_encode($task);
