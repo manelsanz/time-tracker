@@ -14,4 +14,5 @@ $pdo = new PDO("pgsql:" . sprintf(
 $stmt = $pdo->query("SELECT * FROM tasks ORDER BY id DESC LIMIT 1");
 $task = $stmt->fetch();
 
-echo var_dump($task);
+// echo var_dump($task);
+return json_encode($var_dump);
