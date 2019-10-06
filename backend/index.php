@@ -29,8 +29,10 @@ switch ($_SERVER['REQUEST_URI']) {
 
 // echo $task_id;
 
-$stmt = $pdo->query("SELECT * FROM tasks WHERE id=:task_id");
-$stmt->execute([":task_id" => $task_id]);
+$stmt = $pdo->prepare("SELECT * FROM tasks WHERE id= :id");
+// $stmt->execute([":task_id" => $task_id]);
+$stmt->bindValue(':id', $task_id);
+$stmt->execute();
 $task = $stmt->fetch();
 
 // echo var_dump($task);
