@@ -13,8 +13,6 @@ $pdo = new PDO("pgsql:" . sprintf(
 
 $task_id = null;
 
-echo $_SERVER['REQUEST_URI'];
-
 switch ($_SERVER['REQUEST_URI']) {
     case "/task/1":
         $task_id = 1;
