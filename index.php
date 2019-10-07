@@ -223,7 +223,7 @@
                             addTask={(task) => this.addTaskHandler(task)} 
                             updateTask={(task) => this.updateTaskHandler(task)} 
                             setLoading={(status) => this.setLoadingHandler(status)}
-                            loading={loading};
+                            loading={loading}
                         />
                         <div>
                             <h2>Summary of Tasks - {totalElapsed} {totalElapsed < 60 ? ' seconds' : (totalElapsed < 3600 ? ' minutes' : ' hours')} in total </h2>
