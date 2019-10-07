@@ -38,7 +38,7 @@
                 return (
                     <React.Fragment>
                     <h1>Tasks</h1>
-                    <table width="100%" style={{ borderColor: 'red' }}>
+                    <table width="100%" style={{ border: '2px', borderColor: 'red' }}>
                     <thead>
                         <tr>
                             <th>ID</th>
@@ -53,8 +53,8 @@
                         <tr>
                             <td>{ task.id }</td>
                             <td>{ task.name }</td>
-                            <td>{ task.elapsed }</td>
-                            <td>{ moment({}).seconds(task.created_date).format("H:mm:ss") }</td>
+                            <td>{ moment({}).seconds(task.elapsed).format("H:mm:ss") }</td>
+                            <td>{ moment(created_date).format("LLL") }</td>
                         </tr>
                         ))}
                     </tbody>
