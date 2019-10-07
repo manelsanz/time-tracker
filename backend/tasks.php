@@ -1,6 +1,8 @@
 <?php
 
 // putenv("DATABASE_URL=postgres://jfsawnnq:MNZJAGslJffM_blSmP5hiwW-kPGpJxOP@balarama.db.elephantsql.com:5432/jfsawnnq");
+// putenv("DATABASE_URL=postgres://quseqbwvkworot:30e79c7081ea6450af9114986e1ef8b76894f5e8953b6249f60e1c76b9d80bcb@ec2-46-137-187-23.eu-west-1.compute.amazonaws.com:5432/d1vdgilkilim74");
+
 $db = parse_url(getenv("DATABASE_URL"));
 
 $pdo = new PDO("pgsql:" . sprintf(
