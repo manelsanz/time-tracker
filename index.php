@@ -195,7 +195,6 @@
                         <TaskControl 
                             addTask={(task) => this.addTaskHandler(task)} 
                             updateTask={(task) => this.updateTaskHandler(task)} 
-                            currentTask={this.state.tasks[0]} 
                         />
                         <div>
                             <h2>Tasks</h2>
@@ -210,6 +209,10 @@
                             </thead>
 
                             <tbody>
+
+                                {tasks.length === 0 && 
+                                    (<tr><td colspan={4} style={{ textAlign: 'center' }}>There is no tasks yet.</td></tr>)}
+
                                 {this.state.tasks.map((task) => (
                                 <tr key={`task-${task.id}`}>
                                     <td style={{ textAlign: 'center' }}>{ task.id }</td>
