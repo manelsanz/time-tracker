@@ -27,7 +27,7 @@
                 elapsed: 0,
                 interval: null,
                 name: '',
-                lastTask: null
+                currentTask: null
             }
 
             addSecond() {
@@ -62,8 +62,9 @@
             async handleSubmit( event ) {
                 event.preventDefault();
                 console.log(this.state);
-                
-                const { isRunning, name, elapsed, lastTask } = this.state;
+
+                const { lastTask } = this.props;                
+                const { isRunning, name, elapsed, currentTask } = this.state;
                 const date = moment().unix();
 
                 if (!name) {
@@ -79,10 +80,10 @@
                 let elapsed_aux = elapsed;
 
                 if (isRunning) {
-                    if (lastTask && lastTask.name == name) {
+                    if (lastTask && lastTask.id == currentTask.id) {
                         elapsed_aux = elapsed - lastTask.elapsed;   
                     }
-                    formData.append('id', lastTask.id);
+                    formData.append('id', currentTask.id);
                     formData.append('elapsed', elapsed_aux);
                 }
 
@@ -116,13 +117,13 @@
                         if (!response.data.exist) {
                             this.props.addTask(task)
                         }
-                        if (lastTask && lastTask.name != name) {
+                        if (currentTask && currentTask.name != name) {
                             this.resetTime();
                         } else {
                             task.elapsed = elapsed_aux;
                         }
                         this.setState({
-                            lastTask: task
+                            currentTask: task
                         })
                         this.startTime();
 
@@ -202,7 +203,8 @@
                     <div>
                         <TaskControl 
                             addTask={(task) => this.addTaskHandler(task)} 
-                            updateTask={(task) => this.updateTaskHandler(task)} 
+                            updateTask={(task) => this.updateTaskHandler(task)}
+                            lastTask={tasks[0]} 
                         />
                         <div>
                             <h2>Summary of Tasks</h2>
