@@ -26,7 +26,7 @@
                 isRunning: false,
                 elapsed: 0,
                 interval: null,
-                name: '',
+                name: null,
             }
 
             addSecond() {
@@ -54,14 +54,15 @@
                 this.setState({
                     isRunning: false,
                     interval: null,
-                    elapsed: 0
+                    elapsed: 0,
+                    name: null
                 });
             }
 
             async handleSubmit( event ) {
                 event.preventDefault();
                 // console.log(this.state);
-
+                const { currentTask } = this.props;
                 const { isRunning, name, elapsed } = this.state;
                 const date = moment().unix();
 
@@ -70,9 +71,14 @@
                 formData.append('status', isRunning ? 0 : 1);
                 formData.append('date', date);
 
+                let elapsed_aux = elapsed;
+
                 if (isRunning) {
-                    formData.append('elapsed', elapsed);
-                    formData.append('id', this.props.currentTask.id);
+                    if (currentTask && currentTask.name == name) {
+                        elapsed_aux = elapsed - currentTask.elapsed;   
+                    }
+                    formData.append('id', currentTask.id);
+                    formData.append('elapsed', elapsed_aux);
                 }
 
                 try {
@@ -102,6 +108,9 @@
                         this.props.updateTask(task);
 
                     } else {
+                        if (currentTask && currentTask.name != name) {
+                            this.resetTime();
+                        }
                         this.startTime();
                         if (!response.data.exist) {
                             this.props.addTask(task)
@@ -117,7 +126,10 @@
             render() {
                 return (
                     <div>
-                        <h2>{this.state.name || 'Task name'}: { moment.duration(this.state.elapsed, 'seconds').format("H:mm:ss") }</h2>
+                        <h2>
+                            {this.state.name || 'Task name'} | { moment.duration(this.state.elapsed, 'seconds').format("H:mm:ss") }
+                            { elapsed < 60 ? 'seconds' : (elapsed < 3600 ? 'minutes' : 'hours') }
+                        </h2>
                         <form>
                             <input style={{ width: "300px", height: "43px", borderRadius: '5px' }} type="text" name="name" value={this.state.name} placeholder="Name of the task" required
                                 disabled={this.state.isRunning}
@@ -174,7 +186,11 @@
                         <h4>Know the time you invest in tasks during the day</h4>
                     </div>
                     <div>
-                        <TaskControl addTask={(task) => this.addTaskHandler(task)} updateTask={(task) => this.updateTaskHandler(task)} currentTask={this.state.tasks[0]} />
+                        <TaskControl 
+                            addTask={(task) => this.addTaskHandler(task)} 
+                            updateTask={(task) => this.updateTaskHandler(task)} 
+                            currentTask={this.state.tasks[0]} 
+                        />
                         <div>
                             <h2>Tasks</h2>
                             <table border="true" style={{ border: '2px', borderColor: 'blue', borderCollapse: 'collapse', borderSpacing: 0, borderRadius: '5px', width: '100%' }}>

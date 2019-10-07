@@ -18,32 +18,32 @@ $task_id = null;
 
 switch ($_SERVER['REQUEST_METHOD']) {
     case "GET":
-        // $stmt = $pdo->prepare("SELECT * FROM tasks ORDER BY id DESC ");
-        // $stmt->execute();
-        // $result = $stmt->fetchAll();
-
         $query = $pdo->query("SELECT * FROM tasks ORDER BY id DESC");
         $result = $query->fetchAll(PDO::FETCH_ASSOC);
 
         break;
     case "POST":
 
-        if ($_POST['status'] == 1) {
+        $status = $_POST['status'];
+        $date = $_POST['date'];
+
+        if ($status == 1) {
             // START
+            $name = $_POST['name'];
             // Find the task by name and filter only today
             $query = $pdo->prepare("SELECT * FROM tasks WHERE name = ? LIMIT 1");
-            $query->execute([ $_POST['name']]);
+            $query->execute([]);
             // If found: Get the task
             $result = $query->fetch(PDO::FETCH_ASSOC);
             if (!$result) {
                 // If not found: Create a new task
                 $query = $pdo->prepare("INSERT INTO tasks (name, elapsed, created_date) values (?,?,?)");
-                $query->execute([$_POST['name'], 0, $_POST['date']]);
+                $query->execute([$name, 0, $date]);
                 $result = [
                     'id' => $pdo->lastInsertId(),
-                    'name' => $_POST['name'],
+                    'name' => $name,
                     'elapsed' => 0,
-                    'created_date' => $_POST['date'],
+                    'created_date' => $date,
                     'exist' => false
                 ];
             } else {
@@ -51,35 +51,34 @@ switch ($_SERVER['REQUEST_METHOD']) {
             }
 
             $query = $pdo->prepare("INSERT INTO periods (task_id, start_date) values (?,?)");
-            $query->execute([$result['id'], $_POST['date']]);
-            
+            $query->execute([$result['id'], $date]);
+
             // Insert new period with elapsed = 0, start_date
             // Return the task
 
         } else {
             // STOP
             $id = $_POST['id'];
-            $stop_date = $_POST['date'];
             $elapsed = $_POST['elapsed'];
 
             // Find the task
             $query = $pdo->prepare("SELECT * FROM tasks WHERE id = ? LIMIT 1");
-            $query->execute([ $id ]);
+            $query->execute([$id]);
             $result = $query->fetch(PDO::FETCH_ASSOC);
             $result['elapsed'] += $elapsed;
-            
+
             // Find last period.
             $query = $pdo->prepare("SELECT p.* FROM periods p JOIN tasks t ON t.id = p.task_id WHERE p.task_id = ? ORDER BY p.start_date DESC LIMIT 1");
-            $query->execute([ $id ]);
+            $query->execute([$id]);
             $result_period = $query->fetch(PDO::FETCH_ASSOC);
 
             // Update period stop_date.
             $query = $pdo->prepare("UPDATE periods SET stop_date = ? WHERE id = ?");
-            $query->execute([ $stop_date, $result_period['id'] ]);
+            $query->execute([$stop_date, $result_period['id']]);
 
             // Update task with elapsed time added
             $query = $pdo->prepare("UPDATE tasks SET elapsed = ? WHERE id = ?");
-            $query->execute([ $result['elapsed'], $result['id'] ]);
+            $query->execute([$result['elapsed'], $result['id']]);
         }
 
         // die();
