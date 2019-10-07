@@ -10,7 +10,8 @@
     <!-- Load Babel Compiler -->
     <script src="https://unpkg.com/babel-standalone@6.26.0/babel.min.js"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-
+    <!-- Libraries -->
+    <script src="https://unpkg.com/moment@2.24.0/moment.js"></script>
 </head>
 
 <body>
@@ -37,22 +38,27 @@
                 return (
                     <React.Fragment>
                     <h1>Tasks</h1>
-                    <table width="100%" >
-                    <tr>
-                        <th>ID</th>
-                        <th>Name</th>
-                        <th>Elapsed</th>
-                        <th>Created at</th>
-                    </tr>
+                    <table width="100%" style={{ borderColor: 'red' }}>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Elapsed</th>
+                            <th>Created at</th>
+                        </tr>
+                    </thead>
 
-                    {this.state.tasks.map((task) => (
-                    <tr>
-                        <td>{ task.id }</td>
-                        <td>{ task.name }</td>
-                        <td>{ task.elapsed }</td>
-                        <td>{ task.created_date }</td>
-                    </tr>
-                    ))}
+                    <tbody>
+                        {this.state.tasks.map((task) => (
+                        <tr>
+                            <td>{ task.id }</td>
+                            <td>{ task.name }</td>
+                            <td>{ task.elapsed }</td>
+                            <td>{ moment({}).seconds(task.created_date).format("H:mm:ss"); }</td>
+                        </tr>
+                        ))}
+                    </tbody>
+
                     </table>
                     </React.Fragment>
                 );
