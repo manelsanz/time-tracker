@@ -27,7 +27,8 @@
                 elapsed: 0,
                 interval: null,
                 name: '',
-                currentTask: null
+                currentTask: null,
+                lastTask: null
             }
 
             addSecond() {
@@ -61,10 +62,9 @@
 
             async handleSubmit( event ) {
                 event.preventDefault();
-                console.log(this.state);
+                this.setLoading(true);
 
-                const { lastTask } = this.props;                
-                const { isRunning, name, elapsed, currentTask } = this.state;
+                const { isRunning, name, elapsed, currentTask, lastTask } = this.state;
                 const date = moment().unix();
 
                 if (!name) {
@@ -80,7 +80,8 @@
                 let elapsed_aux = elapsed;
 
                 if (isRunning) {
-                    if (lastTask && lastTask.id == currentTask.id) {
+                    if (lastTask && (currentTask.id == lastTask.id)) {
+                        console.log('Minus');
                         elapsed_aux = elapsed - lastTask.elapsed;   
                     }
                     formData.append('id', currentTask.id);
@@ -95,8 +96,6 @@
                         config: { headers: {'Content-Type': 'multipart/form-data' }}
                     });
 
-                    console.log('response', response);
-                    
                     if (response.status !== 200) {
                         alert("Error adding the new task.");
                         return false;
@@ -112,22 +111,27 @@
                     if (isRunning) {
                         this.stopTime();
                         this.props.updateTask(task);
+                        this.setState({
+                            lastTask: task
+                        });
 
                     } else {
                         if (!response.data.exist) {
                             this.props.addTask(task)
                         }
-                        if (currentTask && currentTask.name != name) {
+                        if (lastTask && lastTask.name != name) {
                             this.resetTime();
-                        } else {
-                            task.elapsed = elapsed_aux;
-                        }
+                        } 
+                        // else {
+                        //     task.elapsed = elapsed_aux;
+                        // }
                         this.setState({
                             currentTask: task
-                        })
+                        });
                         this.startTime();
 
                     }
+                    this.setLoading(false);
 
                 } catch (e) {
                     console.log('error', e);
@@ -163,11 +167,13 @@
             }
 
             componentDidMount() {
+                this.setLoading(true);
+
                 const url = '/backend/tasks.php'
                 axios.get(url).then(response => response.data)
                     .then((data) => {
                         this.setState({ tasks: data });
-                        console.log(this.state.tasks);
+                        this.setLoading(false);
                     });
             }
 
@@ -178,7 +184,6 @@
             }
 
             updateTaskHandler(task) {
-                console.log('task a update', task);
                 this.setState(prevState => {
                     const tasks = prevState.tasks.map((item) => {
                         if (item.id == task.id) {
@@ -204,7 +209,6 @@
                         <TaskControl 
                             addTask={(task) => this.addTaskHandler(task)} 
                             updateTask={(task) => this.updateTaskHandler(task)}
-                            lastTask={tasks[0]} 
                         />
                         <div>
                             <h2>Summary of Tasks</h2>
@@ -220,14 +224,14 @@
 
                             <tbody>
                                 {tasks.length === 0 && 
-                                    (<tr><td colSpan={4} style={{ textAlign: 'center', paddingTop: '20px', paddingBottom: '20px' }}>There is no tasks yet.</td></tr>)}
+                                    (<tr><td colSpan={4} style={{ textAlign: 'center', padding: '20px' }}>There aren't tasks yet.</td></tr>)}
 
                                 {tasks.map((task) => (
                                 <tr key={`task-${task.id}`}>
-                                    <td style={{ textAlign: 'center' }}>{ task.id }</td>
-                                    <td style={{ textAlign: 'center' }}>{ task.name }</td>
-                                    <td style={{ textAlign: 'center' }}>{ moment.duration(parseInt(task.elapsed), 'seconds').format("H:mm:ss") }</td>
-                                    <td style={{ textAlign: 'center' }}>{ moment.unix(parseInt(task.created_date)).format("LLL") }</td>
+                                    <td style={{ textAlign: 'center', padding: '15px' }}>{ task.id }</td>
+                                    <td style={{ textAlign: 'center', padding: '15px' }}>{ task.name }</td>
+                                    <td style={{ textAlign: 'center', padding: '15px' }}>{ moment.duration(parseInt(task.elapsed), 'seconds').format("H:mm:ss") }</td>
+                                    <td style={{ textAlign: 'center', padding: '15px' }}>{ moment.unix(parseInt(task.created_date)).format("LLL") }</td>
                                 </tr>
                                 ))}
                             </tbody>
