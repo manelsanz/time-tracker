@@ -174,13 +174,13 @@
             }
 
             componentDidMount() {
-                this.props.setLoading(true);
+                this.setLoadingHandler(true);
 
                 const url = '/backend/tasks.php'
                 axios.get(url).then(response => response.data)
                     .then((data) => {
                         this.setState({ tasks: data });
-                        this.props.setLoading(false);
+                        this.setLoadingHandler(false);
                     });
             }
 
@@ -218,7 +218,7 @@
                         <TaskControl 
                             addTask={(task) => this.addTaskHandler(task)} 
                             updateTask={(task) => this.updateTaskHandler(task)}
-                            setLoading={() => this.setLoadingHandler()}
+                            setLoading={(status) => this.setLoadingHandler(status)}
                         />
                         <div>
                             <h2>Summary of Tasks - {totalElapsed} {totalElapsed < 60 ? ' seconds' : (totalElapsed < 3600 ? ' minutes' : ' hours')} in total </h2>
