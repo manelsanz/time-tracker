@@ -38,7 +38,7 @@
                 return (
                     <React.Fragment>
                     <h1>Tasks</h1>
-                    <table width="100%" style={{ border: '2px', borderColor: 'red' }}>
+                    <table border width="100%" style={{ border: '1px', borderColor: 'red' }}>
                     <thead>
                         <tr>
                             <th>ID</th>
@@ -51,10 +51,10 @@
                     <tbody>
                         {this.state.tasks.map((task) => (
                         <tr>
-                            <td>{ task.id }</td>
-                            <td>{ task.name }</td>
-                            <td>{ moment({}).seconds(task.elapsed).format("H:mm:ss") }</td>
-                            <td>{ moment(task.created_date).format("LLL") }</td>
+                            <td style={{ textAlign: 'center' }}>{ task.id }</td>
+                            <td style={{ textAlign: 'center' }}>{ task.name }</td>
+                            <td style={{ textAlign: 'center' }}>{ moment({}).seconds(task.elapsed).format("H:mm:ss") }</td>
+                            <td style={{ textAlign: 'center' }}>{ moment.unix(task.created_date).format("LLL") }</td>
                         </tr>
                         ))}
                     </tbody>
