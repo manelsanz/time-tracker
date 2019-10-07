@@ -1,5 +1,6 @@
 <?php
 
+putenv("DATABASE_URL=postgres://jfsawnnq:MNZJAGslJffM_blSmP5hiwW-kPGpJxOP@balarama.db.elephantsql.com:5432/jfsawnnq");
 $db = parse_url(getenv("DATABASE_URL"));
 
 $pdo = new PDO("pgsql:" . sprintf(
@@ -40,4 +41,4 @@ $tasks = $stmt->fetchAll();
 
 // echo var_dump($task);
 header('Content-type: application/json');
-echo json_encode($tasks);
+echo json_encode(array_values($tasks));
