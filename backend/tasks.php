@@ -1,7 +1,7 @@
 <?php
 
 // putenv("DATABASE_URL=postgres://jfsawnnq:MNZJAGslJffM_blSmP5hiwW-kPGpJxOP@balarama.db.elephantsql.com:5432/jfsawnnq");
-// putenv("DATABASE_URL=postgres://quseqbwvkworot:30e79c7081ea6450af9114986e1ef8b76894f5e8953b6249f60e1c76b9d80bcb@ec2-46-137-187-23.eu-west-1.compute.amazonaws.com:5432/d1vdgilkilim74");
+putenv("DATABASE_URL=postgres://quseqbwvkworot:30e79c7081ea6450af9114986e1ef8b76894f5e8953b6249f60e1c76b9d80bcb@ec2-46-137-187-23.eu-west-1.compute.amazonaws.com:5432/d1vdgilkilim74");
 
 $db = parse_url(getenv("DATABASE_URL"));
 
@@ -20,11 +20,26 @@ $task_id = null;
 
 switch ($_SERVER['REQUEST_METHOD']) {
     case "GET":
-        $stmt = $pdo->prepare("SELECT * FROM tasks ");
+        $stmt = $pdo->prepare("SELECT * FROM tasks ORDER BY id DESC ");
 
         break;
     case "POST":
-        //TODO
+
+        if ($_POST['status']) {
+            // START
+        } else {
+            // STOP
+
+        }
+
+        $result = [
+            'id' => 24,
+            'name' => $_POST['name'],
+            'exist' => false
+        ];
+        echo json_encode($result);
+        // var_dump($_POST);
+        die();
         break;
     default:
         header('HTTP/1.0 405 Not Found');
@@ -44,3 +59,6 @@ $tasks = $stmt->fetchAll();
 // echo var_dump($task);
 header('Content-type: application/json');
 echo json_encode(array_values($tasks));
+
+exit(0);
+

@@ -21,21 +21,12 @@
 
     <script type="text/babel">
 
-        class App extends React.Component {
+       class TaskControl extends React.Component {
             state = {
                 isRunning: false,
                 elapsed: 0,
                 interval: null,
-                tasks: []
-            }
-
-            componentDidMount() {
-                const url = '/backend/tasks.php'
-                axios.get(url).then(response => response.data)
-                .then((data) => {
-                this.setState({ tasks: data })
-                console.log(this.state.tasks)
-                })
+                name: 'Task name',
             }
 
             addSecond() {
@@ -44,27 +35,117 @@
                 });
             }
 
-            startTimer() {
+            startTime() {
                 const interval = setInterval(() => this.addSecond(), 1000);
                 this.setState({
                     isRunning: true,
                     interval
                 });
             }
-            stopTimer() {
+            stopTime() {
                 clearInterval(this.state.interval);
                 this.setState({ 
                     isRunning: false,
                     interval: null
                 });
             }
-            resetTimer() {
+            resetTime() {
                 clearInterval(this.state.interval);
                 this.setState({
                     isRunning: false,
                     interval: null,
                     elapsed: 0
                 });
+            }
+
+            async handleSubmit( event ) {
+                event.preventDefault();
+                console.log(this.state);
+
+                const { isRunning, name, elapsed } = this.state;
+                const date = moment().unix();
+
+                let formData = new FormData();
+                formData.append('name', name);
+                formData.append('status', !isRunning);
+                formData.append('elapsed', elapsed);
+                formData.append('date', date);
+
+                try {
+                    const response = await axios({
+                        method: 'POST',
+                        url: '/backend/tasks.php',
+                        data: formData,
+                        config: { headers: {'Content-Type': 'multipart/form-data' }}
+                    });
+
+                    console.log('response', response);
+                    
+                    if (response.status !== 200) {
+                        alert("Error adding the new task.");
+                        return false;
+                    }
+
+                    if (isRunning) {
+                        this.stopTime();
+                    } else {
+                        this.startTime();
+                        if (!response.data.exist) {
+                            // ADD
+                            this.props.addTask({
+                                id: response.data.id,
+                                name: response.data.name,
+                                elapsed: 0,
+                                created_date: date
+                            })
+                        } else {
+                            // UPDATE
+                        }
+                    }
+                    // alert(`${response.data['name']} was added.`);
+
+                } catch (e) {
+                    console.log('error', e);
+                    alert("Error adding the new task.");
+                }
+            }
+
+            render(){
+                return (
+                    <div>
+                        <h2>{this.state.name}: { moment.duration(this.state.elapsed, 'seconds').format("H:mm:ss") }</h2>
+                        <form>
+                            <input style={{ width: "250px", height: "40px" }} type="text" name="name" value={this.state.name} placeholder="Name of the task" required
+                                disabled={this.state.isRunning}
+                                onChange={e => this.setState({ name: e.target.value })}
+                                onFocus={(e) => e.target.select()}/>
+                            <button style={{ width: "160px", height: "50px", borderRadius: '5px', backgroundColor: this.state.isRunning ? "red" : "green", "color": "white", "fontWeight": "bold" }} type="submit" onClick={e => this.handleSubmit(e)}>
+                                {this.state.isRunning ? "STOP" : "START"}
+                            </button>
+                        </form>
+                    </div>
+                );
+            }
+        }
+
+        class App extends React.Component {
+            state = {
+                tasks: []
+            }
+
+            componentDidMount() {
+                const url = '/backend/tasks.php'
+                axios.get(url).then(response => response.data)
+                    .then((data) => {
+                        this.setState({ tasks: data });
+                        console.log(this.state.tasks);
+                    });
+            }
+
+            addTaskHandler(task) {
+                let tasks = this.state.tasks;
+                tasks.unshift(task);
+                this.setState({ tasks: tasks });
             }
 
             render() {
@@ -75,13 +156,7 @@
                         <h4>Control the time you invest in each daily tasks</h4>
                     </div>
                     <div>
-                        <div>
-                            <h2>Timer: { moment.duration(this.state.elapsed, 'seconds').format("H:mm:ss") }</h2>
-                            { this.state.isRunning ? 
-                                (<button onClick={() => this.stopTimer()}>Stop</button>) 
-                                : (<button onClick={() => this.startTimer()}>Start</button>) 
-                            }
-                        </div>  
+                        <TaskControl addTask={(task) => this.addTaskHandler(task)} />
                         <div>
                             <h2>Tasks</h2>
                             <table border="true" width="100%" style={{ border: '1px', borderColor: 'red' }}>
@@ -95,7 +170,7 @@
                             </thead>
 
                             <tbody>
-                                {this.state.tasks.map((task, i) => (
+                                {this.state.tasks.map((task) => (
                                 <tr key={`task-${task.id}`}>
                                     <td style={{ textAlign: 'center' }}>{ task.id }</td>
                                     <td style={{ textAlign: 'center' }}>{ task.name }</td>
