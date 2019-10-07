@@ -185,6 +185,8 @@
             }
 
             render() {
+                const { tasks } = this.state;
+
                 return (
                     <React.Fragment>
                     <div>
@@ -213,7 +215,7 @@
                                 {tasks.length === 0 && 
                                     (<tr><td colspan={4} style={{ textAlign: 'center' }}>There is no tasks yet.</td></tr>)}
 
-                                {this.state.tasks.map((task) => (
+                                {tasks.map((task) => (
                                 <tr key={`task-${task.id}`}>
                                     <td style={{ textAlign: 'center' }}>{ task.id }</td>
                                     <td style={{ textAlign: 'center' }}>{ task.name }</td>
