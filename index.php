@@ -111,6 +111,7 @@
                     };
 
                     if (isRunning) {
+                        console.log('stoping');
                         this.stopTime();
                         this.props.updateTask(task);
                         task.elapsed = elapsed;
@@ -119,6 +120,8 @@
                         });
 
                     } else {
+                        console.log('Starting...');
+
                         if (!response.data.exist) {
                             this.props.addTask(task)
                         }
@@ -195,6 +198,7 @@
             }
 
             updateTaskHandler(task) {
+                console.log('task update', task);
                 this.setState(prevState => {
                     const tasks = prevState.tasks.map((item) => {
                         if (item.id == task.id) {
