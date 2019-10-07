@@ -61,7 +61,8 @@
 
             async handleSubmit( event ) {
                 event.preventDefault();
-                // console.log(this.state);
+                console.log(this.state);
+                
                 const { isRunning, name, elapsed, lastTask } = this.state;
                 const date = moment().unix();
 
@@ -117,8 +118,9 @@
                         }
                         if (lastTask && lastTask.name != name) {
                             this.resetTime();
+                        } else {
+                            task.elapsed = elapsed_aux;
                         }
-                        task.elapsed = elapsed_aux;
                         this.setState({
                             lastTask: task
                         })
