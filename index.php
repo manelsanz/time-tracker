@@ -96,6 +96,8 @@
                         config: { headers: {'Content-Type': 'multipart/form-data' }}
                     });
 
+                    console.log('response', response);
+
                     if (response.status !== 200) {
                         alert("Error adding the new task.");
                         return false;
@@ -111,6 +113,7 @@
                     if (isRunning) {
                         this.stopTime();
                         this.props.updateTask(task);
+                        task.elapsed = elapsed;
                         this.setState({
                             lastTask: task
                         });
@@ -140,6 +143,7 @@
             }
 
             render() {
+                const { loading } = this.props;
                 const { name, elapsed, isRunning } = this.state;
                 return (
                     <div style={{ textAlign: 'center' }}>
@@ -152,7 +156,7 @@
                                 disabled={isRunning}
                                 onChange={e => this.setState({ name: e.target.value })}
                                 onFocus={(e) => e.target.select()}/>
-                            <button style={{ width: "280px", height: "50px", borderRadius: '5px', backgroundColor: isRunning ? "red" : "green", "color": "white", "fontWeight": "bold" }} type="submit" onClick={e => this.handleSubmit(e)}>
+                            <button disabled={loading} style={{ width: "280px", height: "50px", borderRadius: '5px', backgroundColor: isRunning ? "red" : "green", "color": "white", "fontWeight": "bold" }} type="submit" onClick={e => this.handleSubmit(e)}>
                                 {isRunning ? "STOP" : "START"}
                             </button>
                         </form>
@@ -204,7 +208,7 @@
             }
 
             render() {
-                const { tasks } = this.state;
+                const { tasks, loading } = this.state;
                 // const reduceElapsed = (acc, task) => acc + task.elapsed;
                 const totalElapsed = tasks.reduce((acc, task) => acc + task.elapsed, 0); 
 
@@ -217,8 +221,9 @@
                     <div>
                         <TaskControl 
                             addTask={(task) => this.addTaskHandler(task)} 
-                            updateTask={(task) => this.updateTaskHandler(task)}
+                            updateTask={(task) => this.updateTaskHandler(task)} 
                             setLoading={(status) => this.setLoadingHandler(status)}
+                            loading={loading};
                         />
                         <div>
                             <h2>Summary of Tasks - {totalElapsed} {totalElapsed < 60 ? ' seconds' : (totalElapsed < 3600 ? ' minutes' : ' hours')} in total </h2>
