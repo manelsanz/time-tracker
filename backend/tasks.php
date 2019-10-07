@@ -15,26 +15,29 @@ $task_id = null;
 
 // echo $_SERVER['REQUEST_URI'];
 
-switch ($_SERVER['REQUEST_URI']) {
-    case "/tasks/1":
-        $task_id = 1;
+switch ($_SERVER['REQUEST_METHOD']) {
+    case "GET":
+        $stmt = $pdo->prepare("SELECT * FROM tasks ");
+
         break;
-    case "/tasks/2":
-        $task_id = 2;
+    case "POST":
+        //TODO
         break;
     default:
-        header('HTTP/1.0 404 Not Found');
+        header('HTTP/1.0 405 Not Found');
+        die();
         break;
 }
 
 // echo $task_id;
-
-$stmt = $pdo->prepare("SELECT * FROM tasks WHERE id= :id");
 // $stmt->execute([":task_id" => $task_id]);
-$stmt->bindValue(':id', $task_id);
+// $stmt = $pdo->prepare("SELECT * FROM tasks WHERE id = :id");
+// if ($id = $_GET['id']) {
+//     $stmt->bindValue(':id', $id);
+// }
 $stmt->execute();
-$task = $stmt->fetch();
+$tasks = $stmt->fetchAll();
 
 // echo var_dump($task);
 header('Content-type: application/json');
-echo json_encode($task);
+echo json_encode($tasks);
