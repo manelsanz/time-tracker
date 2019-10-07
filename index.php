@@ -66,6 +66,11 @@
                 const { isRunning, name, elapsed, lastTask } = this.state;
                 const date = moment().unix();
 
+                if (!name) {
+                    alert("The name can't be empty!");
+                    return false;
+                }
+
                 let formData = new FormData();
                 formData.append('name', name);
                 formData.append('status', isRunning ? 0 : 1);
@@ -96,7 +101,7 @@
                         return false;
                     }
 
-                    const task = {
+                    let task = {
                         id: response.data.id,
                         name: response.data.name,
                         elapsed: response.data.elapsed,
@@ -112,9 +117,9 @@
                             this.props.addTask(task)
                         }
                         if (lastTask && lastTask.name != name) {
-                            console.log('Reset time');
                             this.resetTime();
                         }
+                        task.elapsed = elapsed_aux;
                         this.setState({
                             lastTask: task
                         })
@@ -131,17 +136,17 @@
             render() {
                 const { name, elapsed, isRunning } = this.state;
                 return (
-                    <div>
+                    <div style={{ textAlign: 'center' }}>
                         <h2>
-                            {name || 'Task name'} - { moment.duration(elapsed, 'seconds').format("H:mm:ss") }
+                            {name || 'Task name'} -> { moment.duration(elapsed, 'seconds').format("H:mm:ss") }
                             {elapsed < 60 ? ' seconds' : (elapsed < 3600 ? ' minutes' : ' hours')}
                         </h2>
                         <form>
-                            <input style={{ width: "300px", height: "43px", borderRadius: '5px' }} type="text" name="name" value={name} placeholder="Name of the task" required={true}
+                            <input style={{ width: "280px", height: "43px", borderRadius: '5px' }} type="text" name="name" value={name} placeholder="Name of the task" required={true}
                                 disabled={isRunning}
                                 onChange={e => this.setState({ name: e.target.value })}
                                 onFocus={(e) => e.target.select()}/>
-                            <button style={{ width: "160px", height: "50px", borderRadius: '5px', backgroundColor: isRunning ? "red" : "green", "color": "white", "fontWeight": "bold" }} type="submit" onClick={e => this.handleSubmit(e)}>
+                            <button style={{ width: "280px", height: "50px", borderRadius: '5px', backgroundColor: isRunning ? "red" : "green", "color": "white", "fontWeight": "bold" }} type="submit" onClick={e => this.handleSubmit(e)}>
                                 {isRunning ? "STOP" : "START"}
                             </button>
                         </form>
@@ -193,7 +198,7 @@
                         <h1 style={{ color: "blue" }}>Time Tracker</h1>
                         <h4>Know the time you invest in tasks during the day</h4>
                     </div>
-                    <div>
+                    <div style={{ textAlign: 'center' }}>
                         <TaskControl 
                             addTask={(task) => this.addTaskHandler(task)} 
                             updateTask={(task) => this.updateTaskHandler(task)} 
@@ -213,7 +218,7 @@
                             <tbody>
 
                                 {tasks.length === 0 && 
-                                    (<tr><td colspan={4} style={{ textAlign: 'center' }}>There is no tasks yet.</td></tr>)}
+                                    (<tr><td colSpan={4} style={{ textAlign: 'center', paddingVertical: '20px' }}>There is no tasks yet.</td></tr>)}
 
                                 {tasks.map((task) => (
                                 <tr key={`task-${task.id}`}>

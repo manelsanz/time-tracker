@@ -61,7 +61,7 @@ switch ($_SERVER['REQUEST_METHOD']) {
             $query = $pdo->prepare("SELECT * FROM tasks WHERE id = ? LIMIT 1");
             $query->execute([$id]);
             $result = $query->fetch(PDO::FETCH_ASSOC);
-            $result['elapsed'] += $elapsed;
+            $total_elapsed = $result['elapsed'] + $elapsed;
 
             // Find last period.
             $query = $pdo->prepare("SELECT p.id FROM periods p JOIN tasks t ON t.id = p.task_id WHERE p.task_id = ? ORDER BY p.start_date DESC LIMIT 1");
@@ -70,11 +70,13 @@ switch ($_SERVER['REQUEST_METHOD']) {
 
             // Update period stop_date.
             $query = $pdo->prepare("UPDATE periods SET stop_date = ? WHERE id = ?");
-            $query->execute([$stop_date, $result_period['id']]);
+            $query->execute([$date, $result_period['id']]);
 
             // Update task with elapsed time added
             $query = $pdo->prepare("UPDATE tasks SET elapsed = ? WHERE id = ?");
-            $query->execute([$result['elapsed'], $result['id']]);
+            $query->execute([$total_elapsed, $result['id']]);
+
+            $result['elapsed'] = $total_elapsed;
         }
 
         // die();
