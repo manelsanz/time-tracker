@@ -124,19 +124,20 @@
             }
 
             render() {
+                const { name, elapsed, isRunning } = this.state;
                 return (
                     <div>
                         <h2>
-                            {this.state.name || 'Task name'} | { moment.duration(this.state.elapsed, 'seconds').format("H:mm:ss") }
-                            { elapsed < 60 ? 'seconds' : (elapsed < 3600 ? 'minutes' : 'hours') }
+                            {name || 'Task name'} | { moment.duration(elapsed, 'seconds').format("H:mm:ss") }
+                            {elapsed < 60 ? 'seconds' : (elapsed < 3600 ? 'minutes' : 'hours')}
                         </h2>
                         <form>
-                            <input style={{ width: "300px", height: "43px", borderRadius: '5px' }} type="text" name="name" value={this.state.name} placeholder="Name of the task" required
-                                disabled={this.state.isRunning}
+                            <input style={{ width: "300px", height: "43px", borderRadius: '5px' }} type="text" name="name" value={name} placeholder="Name of the task" required
+                                disabled={isRunning}
                                 onChange={e => this.setState({ name: e.target.value })}
                                 onFocus={(e) => e.target.select()}/>
-                            <button style={{ width: "160px", height: "50px", borderRadius: '5px', backgroundColor: this.state.isRunning ? "red" : "green", "color": "white", "fontWeight": "bold" }} type="submit" onClick={e => this.handleSubmit(e)}>
-                                {this.state.isRunning ? "STOP" : "START"}
+                            <button style={{ width: "160px", height: "50px", borderRadius: '5px', backgroundColor: isRunning ? "red" : "green", "color": "white", "fontWeight": "bold" }} type="submit" onClick={e => this.handleSubmit(e)}>
+                                {isRunning ? "STOP" : "START"}
                             </button>
                         </form>
                     </div>
