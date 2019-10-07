@@ -54,7 +54,7 @@
                             <td>{ task.id }</td>
                             <td>{ task.name }</td>
                             <td>{ task.elapsed }</td>
-                            <td>{ moment({}).seconds(task.created_date).format("H:mm:ss"); }</td>
+                            <td>{ moment({}).seconds(task.created_date).format("H:mm:ss") }</td>
                         </tr>
                         ))}
                     </tbody>
