@@ -218,7 +218,7 @@
                         <TaskControl 
                             addTask={(task) => this.addTaskHandler(task)} 
                             updateTask={(task) => this.updateTaskHandler(task)}
-                            setLoading={() => this.setLoadingHandler()};
+                            setLoading={() => this.setLoadingHandler()}
                         />
                         <div>
                             <h2>Summary of Tasks - {totalElapsed} {totalElapsed < 60 ? ' seconds' : (totalElapsed < 3600 ? ' minutes' : ' hours')} in total </h2>
