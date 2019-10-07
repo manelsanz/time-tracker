@@ -240,7 +240,7 @@
                                 <tr key={`task-${task.id}`}>
                                     <td style={{ textAlign: 'center', padding: '15px' }}>{ task.id }</td>
                                     <td style={{ textAlign: 'center', padding: '15px' }}>{ task.name }</td>
-                                    <td style={{ textAlign: 'center', padding: '15px' }}>{ moment.duration(parseInt(task.elapsed), 'seconds').format("H:mm:ss") {task.elapsed < 60 ? ' seconds' : (task.elapsed < 3600 ? ' minutes' : ' hours')} }</td>
+                                    <td style={{ textAlign: 'center', padding: '15px' }}>{ moment.duration(parseInt(task.elapsed), 'seconds').format("H:mm:ss")} {task.elapsed < 60 ? ' seconds' : (task.elapsed < 3600 ? ' minutes' : ' hours')}</td>
                                     <td style={{ textAlign: 'center', padding: '15px' }}>{ moment.unix(parseInt(task.created_date)).format("LLL") }</td>
                                 </tr>
                                 ))}
