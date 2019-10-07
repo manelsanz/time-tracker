@@ -27,6 +27,7 @@
                 elapsed: 0,
                 interval: null,
                 name: '',
+                lastTask: null
             }
 
             addSecond() {
@@ -62,8 +63,7 @@
             async handleSubmit( event ) {
                 event.preventDefault();
                 // console.log(this.state);
-                const { currentTask } = this.props;
-                const { isRunning, name, elapsed } = this.state;
+                const { isRunning, name, elapsed, lastTask } = this.state;
                 const date = moment().unix();
 
                 let formData = new FormData();
@@ -74,10 +74,10 @@
                 let elapsed_aux = elapsed;
 
                 if (isRunning) {
-                    if (currentTask && currentTask.name == name) {
-                        elapsed_aux = elapsed - currentTask.elapsed;   
+                    if (lastTask && lastTask.name == name) {
+                        elapsed_aux = elapsed - lastTask.elapsed;   
                     }
-                    formData.append('id', currentTask.id);
+                    formData.append('id', lastTask.id);
                     formData.append('elapsed', elapsed_aux);
                 }
 
@@ -108,14 +108,18 @@
                         this.props.updateTask(task);
 
                     } else {
-                        if (currentTask && currentTask.name != name) {
-                            console.log('Reset time');
-                            this.resetTime();
-                        }
-                        this.startTime();
                         if (!response.data.exist) {
                             this.props.addTask(task)
                         }
+                        if (lastTask && lastTask.name != name) {
+                            console.log('Reset time');
+                            this.resetTime();
+                        }
+                        this.setState({
+                            lastTask: task
+                        })
+                        this.startTime();
+
                     }
 
                 } catch (e) {
@@ -133,7 +137,7 @@
                             {elapsed < 60 ? ' seconds' : (elapsed < 3600 ? ' minutes' : ' hours')}
                         </h2>
                         <form>
-                            <input style={{ width: "300px", height: "43px", borderRadius: '5px' }} type="text" name="name" value={name} placeholder="Name of the task" required="true"
+                            <input style={{ width: "300px", height: "43px", borderRadius: '5px' }} type="text" name="name" value={name} placeholder="Name of the task" required={true}
                                 disabled={isRunning}
                                 onChange={e => this.setState({ name: e.target.value })}
                                 onFocus={(e) => e.target.select()}/>
