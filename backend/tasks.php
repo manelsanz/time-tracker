@@ -1,6 +1,5 @@
 <?php
 
-// putenv("DATABASE_URL=postgres://jfsawnnq:MNZJAGslJffM_blSmP5hiwW-kPGpJxOP@balarama.db.elephantsql.com:5432/jfsawnnq");
 putenv("DATABASE_URL=postgres://quseqbwvkworot:30e79c7081ea6450af9114986e1ef8b76894f5e8953b6249f60e1c76b9d80bcb@ec2-46-137-187-23.eu-west-1.compute.amazonaws.com:5432/d1vdgilkilim74");
 
 $db = parse_url(getenv("DATABASE_URL"));
@@ -48,7 +47,7 @@ switch ($_SERVER['REQUEST_METHOD']) {
             } else {
                 $result['exist'] = true;
             }
-            // Insert new period with elapsed = 0, start_date
+            // Insert new period
             $query = $pdo->prepare("INSERT INTO periods (task_id, start_date) values (?,?)");
             $query->execute([$result['id'], $date]);
 
@@ -79,7 +78,6 @@ switch ($_SERVER['REQUEST_METHOD']) {
             $result['elapsed'] = $total_elapsed;
         }
 
-        // die();
         break;
     default:
         header('HTTP/1.0 405 Not Found');
@@ -91,14 +89,3 @@ header('Content-type: application/json');
 echo json_encode($result);
 
 exit(0);
-
-
-// echo $task_id;
-// $stmt->execute([":task_id" => $task_id]);
-// $stmt = $pdo->prepare("SELECT * FROM tasks WHERE id = :id");
-// if ($id = $_GET['id']) {
-//     $stmt->bindValue(':id', $id);
-// }
-
-
-// echo var_dump($task);

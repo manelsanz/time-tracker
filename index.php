@@ -56,7 +56,6 @@
                     isRunning: false,
                     interval: null,
                     elapsed: 0,
-                    name: ''
                 });
             }
 
@@ -138,7 +137,7 @@
                 return (
                     <div style={{ textAlign: 'center' }}>
                         <h2>
-                            {name || 'Task name'} -> { moment.duration(elapsed, 'seconds').format("H:mm:ss") }
+                            {name || 'Task name'} - { moment.duration(elapsed, 'seconds').format("H:mm:ss") }
                             {elapsed < 60 ? ' seconds' : (elapsed < 3600 ? ' minutes' : ' hours')}
                         </h2>
                         <form>
@@ -198,27 +197,26 @@
                         <h1 style={{ color: "blue" }}>Time Tracker</h1>
                         <h4>Know the time you invest in tasks during the day</h4>
                     </div>
-                    <div style={{ textAlign: 'center' }}>
+                    <div>
                         <TaskControl 
                             addTask={(task) => this.addTaskHandler(task)} 
                             updateTask={(task) => this.updateTaskHandler(task)} 
                         />
                         <div>
-                            <h2>Tasks</h2>
+                            <h2>Summary of Tasks</h2>
                             <table border="true" style={{ border: '2px', borderColor: 'blue', borderCollapse: 'collapse', borderSpacing: 0, borderRadius: '5px', width: '100%' }}>
                             <thead>
                                 <tr>
                                     <th>ID</th>
                                     <th>Name</th>
                                     <th>Elapsed</th>
-                                    <th>Created at</th>
+                                    <th>Created date</th>
                                 </tr>
                             </thead>
 
                             <tbody>
-
                                 {tasks.length === 0 && 
-                                    (<tr><td colSpan={4} style={{ textAlign: 'center', paddingVertical: '20px' }}>There is no tasks yet.</td></tr>)}
+                                    (<tr><td colSpan={4} style={{ textAlign: 'center', paddingTop: '20px', paddingBottom: '20px' }}>There is no tasks yet.</td></tr>)}
 
                                 {tasks.map((task) => (
                                 <tr key={`task-${task.id}`}>
