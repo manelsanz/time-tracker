@@ -15,7 +15,7 @@
     <script src="https://unpkg.com/moment-duration-format@2.3.2/lib/moment-duration-format.js"></script>
 </head>
 
-<body>
+<body style="font-family: arial;">
 
     <div id='root'></div>
 
@@ -26,7 +26,7 @@
                 isRunning: false,
                 elapsed: 0,
                 interval: null,
-                name: 'Task name',
+                name: '',
             }
 
             addSecond() {
@@ -60,16 +60,20 @@
 
             async handleSubmit( event ) {
                 event.preventDefault();
-                console.log(this.state);
+                // console.log(this.state);
 
                 const { isRunning, name, elapsed } = this.state;
                 const date = moment().unix();
 
                 let formData = new FormData();
                 formData.append('name', name);
-                formData.append('status', !isRunning);
-                formData.append('elapsed', elapsed);
+                formData.append('status', isRunning ? 0 : 1);
                 formData.append('date', date);
+
+                if (isRunning) {
+                    formData.append('elapsed', elapsed);
+                    formData.append('id', this.props.currentTask.id);
+                }
 
                 try {
                     const response = await axios({
@@ -86,23 +90,23 @@
                         return false;
                     }
 
+                    const task = {
+                        id: response.data.id,
+                        name: response.data.name,
+                        elapsed: response.data.elapsed,
+                        created_date: response.data.created_date
+                    };
+
                     if (isRunning) {
                         this.stopTime();
+                        this.props.updateTask(task);
+
                     } else {
                         this.startTime();
                         if (!response.data.exist) {
-                            // ADD
-                            this.props.addTask({
-                                id: response.data.id,
-                                name: response.data.name,
-                                elapsed: 0,
-                                created_date: date
-                            })
-                        } else {
-                            // UPDATE
+                            this.props.addTask(task)
                         }
                     }
-                    // alert(`${response.data['name']} was added.`);
 
                 } catch (e) {
                     console.log('error', e);
@@ -110,12 +114,12 @@
                 }
             }
 
-            render(){
+            render() {
                 return (
                     <div>
-                        <h2>{this.state.name}: { moment.duration(this.state.elapsed, 'seconds').format("H:mm:ss") }</h2>
+                        <h2>{this.state.name || 'Task name'}: { moment.duration(this.state.elapsed, 'seconds').format("H:mm:ss") }</h2>
                         <form>
-                            <input style={{ width: "250px", height: "40px" }} type="text" name="name" value={this.state.name} placeholder="Name of the task" required
+                            <input style={{ width: "300px", height: "43px", borderRadius: '5px' }} type="text" name="name" value={this.state.name} placeholder="Name of the task" required
                                 disabled={this.state.isRunning}
                                 onChange={e => this.setState({ name: e.target.value })}
                                 onFocus={(e) => e.target.select()}/>
@@ -145,21 +149,35 @@
             addTaskHandler(task) {
                 let tasks = this.state.tasks;
                 tasks.unshift(task);
-                this.setState({ tasks: tasks });
+                this.setState({ tasks });
+            }
+
+            updateTaskHandler(task) {
+                console.log('task a update', task);
+                this.setState(prevState => {
+                    const tasks = prevState.tasks.map((item) => {
+                        if (item.id == task.id) {
+                            return task;
+                        } else {
+                            return item;
+                        }
+                    });
+                    return { tasks };
+                });
             }
 
             render() {
                 return (
                     <React.Fragment>
                     <div>
-                        <h1>Time Tracker</h1>
-                        <h4>Control the time you invest in each daily tasks</h4>
+                        <h1 style={{ color: "blue" }}>Time Tracker</h1>
+                        <h4>Know the time you invest in tasks during the day</h4>
                     </div>
                     <div>
-                        <TaskControl addTask={(task) => this.addTaskHandler(task)} />
+                        <TaskControl addTask={(task) => this.addTaskHandler(task)} updateTask={(task) => this.updateTaskHandler(task)} currentTask={this.state.tasks[0]} />
                         <div>
                             <h2>Tasks</h2>
-                            <table border="true" width="100%" style={{ border: '1px', borderColor: 'red' }}>
+                            <table border="true" style={{ border: '2px', borderColor: 'blue', borderCollapse: 'collapse', borderSpacing: 0, borderRadius: '5px', width: '100%' }}>
                             <thead>
                                 <tr>
                                     <th>ID</th>
@@ -174,8 +192,8 @@
                                 <tr key={`task-${task.id}`}>
                                     <td style={{ textAlign: 'center' }}>{ task.id }</td>
                                     <td style={{ textAlign: 'center' }}>{ task.name }</td>
-                                    <td style={{ textAlign: 'center' }}>{ moment.duration(task.elapsed, 'seconds').format("H:mm:ss") }</td>
-                                    <td style={{ textAlign: 'center' }}>{ moment.unix(task.created_date).format("LLL") }</td>
+                                    <td style={{ textAlign: 'center' }}>{ moment.duration(parseInt(task.elapsed), 'seconds').format("H:mm:ss") }</td>
+                                    <td style={{ textAlign: 'center' }}>{ moment.unix(parseInt(task.created_date)).format("LLL") }</td>
                                 </tr>
                                 ))}
                             </tbody>
@@ -183,8 +201,6 @@
                             </table>                    
                         </div>
                     </div>
-                    
-
                     </React.Fragment>
                 );
             }
