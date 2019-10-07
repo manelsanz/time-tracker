@@ -109,6 +109,7 @@
 
                     } else {
                         if (currentTask && currentTask.name != name) {
+                            console.log('Reset time');
                             this.resetTime();
                         }
                         this.startTime();
@@ -132,7 +133,7 @@
                             {elapsed < 60 ? ' seconds' : (elapsed < 3600 ? ' minutes' : ' hours')}
                         </h2>
                         <form>
-                            <input style={{ width: "300px", height: "43px", borderRadius: '5px' }} type="text" name="name" value={name} placeholder="Name of the task" required
+                            <input style={{ width: "300px", height: "43px", borderRadius: '5px' }} type="text" name="name" value={name} placeholder="Name of the task" required="true"
                                 disabled={isRunning}
                                 onChange={e => this.setState({ name: e.target.value })}
                                 onFocus={(e) => e.target.select()}/>
