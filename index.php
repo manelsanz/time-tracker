@@ -206,7 +206,7 @@
             render() {
                 const { tasks } = this.state;
                 // const reduceElapsed = (acc, task) => acc + task.elapsed;
-                const totalElapsed = tasks.reduce((acc, task) => acc + task.elapsed); 
+                const totalElapsed = tasks.reduce((acc, task) => acc + task.elapsed, 0); 
 
                 return (
                     <React.Fragment>
