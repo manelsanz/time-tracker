@@ -62,7 +62,7 @@
 
             async handleSubmit( event ) {
                 event.preventDefault();
-                this.setLoading(true);
+                this.props.setLoading(true);
 
                 const { isRunning, name, elapsed, currentTask, lastTask } = this.state;
                 const date = moment().unix();
@@ -131,7 +131,7 @@
                         this.startTime();
 
                     }
-                    this.setLoading(false);
+                    this.props.setLoading(false);
 
                 } catch (e) {
                     console.log('error', e);
@@ -163,17 +163,24 @@
 
         class App extends React.Component {
             state = {
-                tasks: []
+                tasks: [],
+                loading: false
+            }
+
+            setLoadingHandler(status) {
+                this.setState({
+                    loading: status
+                });
             }
 
             componentDidMount() {
-                this.setLoading(true);
+                this.props.setLoading(true);
 
                 const url = '/backend/tasks.php'
                 axios.get(url).then(response => response.data)
                     .then((data) => {
                         this.setState({ tasks: data });
-                        this.setLoading(false);
+                        this.props.setLoading(false);
                     });
             }
 
@@ -198,6 +205,8 @@
 
             render() {
                 const { tasks } = this.state;
+                // const reduceElapsed = (acc, task) => acc + task.elapsed;
+                const totalElapsed = tasks.reduce((acc, task) => acc + task.elapsed); 
 
                 return (
                     <React.Fragment>
@@ -209,9 +218,10 @@
                         <TaskControl 
                             addTask={(task) => this.addTaskHandler(task)} 
                             updateTask={(task) => this.updateTaskHandler(task)}
+                            setLoading={() => this.setLoadingHandler()};
                         />
                         <div>
-                            <h2>Summary of Tasks</h2>
+                            <h2>Summary of Tasks - {totalElapsed} {totalElapsed < 60 ? ' seconds' : (totalElapsed < 3600 ? ' minutes' : ' hours')} in total </h2>
                             <table border="true" style={{ border: '2px', borderColor: 'blue', borderCollapse: 'collapse', borderSpacing: 0, borderRadius: '5px', width: '100%' }}>
                             <thead>
                                 <tr>
@@ -230,7 +240,7 @@
                                 <tr key={`task-${task.id}`}>
                                     <td style={{ textAlign: 'center', padding: '15px' }}>{ task.id }</td>
                                     <td style={{ textAlign: 'center', padding: '15px' }}>{ task.name }</td>
-                                    <td style={{ textAlign: 'center', padding: '15px' }}>{ moment.duration(parseInt(task.elapsed), 'seconds').format("H:mm:ss") }</td>
+                                    <td style={{ textAlign: 'center', padding: '15px' }}>{ moment.duration(parseInt(task.elapsed), 'seconds').format("H:mm:ss") {task.elapsed < 60 ? ' seconds' : (task.elapsed < 3600 ? ' minutes' : ' hours')} }</td>
                                     <td style={{ textAlign: 'center', padding: '15px' }}>{ moment.unix(parseInt(task.created_date)).format("LLL") }</td>
                                 </tr>
                                 ))}
