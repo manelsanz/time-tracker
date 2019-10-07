@@ -26,7 +26,7 @@
                 isRunning: false,
                 elapsed: 0,
                 interval: null,
-                name: null,
+                name: '',
             }
 
             addSecond() {
@@ -55,7 +55,7 @@
                     isRunning: false,
                     interval: null,
                     elapsed: 0,
-                    name: null
+                    name: ''
                 });
             }
 
@@ -128,8 +128,8 @@
                 return (
                     <div>
                         <h2>
-                            {name || 'Task name'} | { moment.duration(elapsed, 'seconds').format("H:mm:ss") }
-                            {elapsed < 60 ? 'seconds' : (elapsed < 3600 ? 'minutes' : 'hours')}
+                            {name || 'Task name'} - { moment.duration(elapsed, 'seconds').format("H:mm:ss") }
+                            {elapsed < 60 ? ' seconds' : (elapsed < 3600 ? ' minutes' : ' hours')}
                         </h2>
                         <form>
                             <input style={{ width: "300px", height: "43px", borderRadius: '5px' }} type="text" name="name" value={name} placeholder="Name of the task" required
