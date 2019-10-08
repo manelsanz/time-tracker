@@ -118,7 +118,7 @@
                         let task_aux = task;
                         task_aux['elapsed'] = elapsed_aux;
                         this.setState({
-                            lastTask: task_aux;
+                            lastTask: task_aux
                         });
 
                     } else {
@@ -232,7 +232,7 @@
                             loading={loading}
                         />
                         <div>
-                            <h2>Summary of Tasks - {totalElapsed} {totalElapsed < 60 ? ' seconds' : (totalElapsed < 3600 ? ' minutes' : ' hours')} in total </h2>
+                            <h2>Summary - {totalElapsed} {totalElapsed < 60 ? ' seconds' : (totalElapsed < 3600 ? ' minutes' : ' hours')} in total </h2>
                             <table border="true" style={{ border: '2px', borderColor: 'blue', borderCollapse: 'collapse', borderSpacing: 0, borderRadius: '5px', width: '100%' }}>
                             <thead>
                                 <tr>
