@@ -234,7 +234,7 @@
                             loading={loading}
                         />
                         <div>
-                            <h2>Summary - {moment.duration(totalElapsed, 'seconds').format("H:mm:ss")}} {totalElapsed < 60 ? ' seconds' : (totalElapsed < 3600 ? ' minutes' : ' hours')} in total </h2>
+                            <h2>Summary - {moment.duration(totalElapsed, 'seconds').format("H:mm:ss")} {totalElapsed < 60 ? ' seconds' : (totalElapsed < 3600 ? ' minutes' : ' hours')} in total </h2>
                             <table border="true" style={{ border: '2px', borderColor: 'blue', borderCollapse: 'collapse', borderSpacing: 0, borderRadius: '5px', width: '100%' }}>
                             <thead>
                                 <tr>
