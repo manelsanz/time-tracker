@@ -77,9 +77,9 @@
                 formData.append('status', isRunning ? 0 : 1);
                 formData.append('date', date);
 
-                let elapsed_aux = elapsed;
 
                 if (isRunning) {
+                    let elapsed_aux = elapsed;
                     if (lastTask && (currentTask.id == lastTask.id)) {
                         console.log('Minus');
                         elapsed_aux = elapsed - lastTask.elapsed;   
@@ -114,7 +114,8 @@
                         console.log('stoping');
                         this.stopTime();
                         this.props.updateTask(task);
-                        task.elapsed = elapsed;
+                        
+                        task['elapsed'] = elapsed;
                         this.setState({
                             lastTask: task
                         });
