@@ -81,7 +81,6 @@
                 
                 if (isRunning) {
                     if (lastTask && (currentTask.id == lastTask.id)) {
-                        console.log('Minus');
                         elapsed_aux = elapsed - lastTask.elapsed;   
                     }
                     formData.append('id', currentTask.id);
@@ -96,8 +95,6 @@
                         config: { headers: {'Content-Type': 'multipart/form-data' }}
                     });
 
-                    console.log('response', response);
-
                     if (response.status !== 200) {
                         alert("Error adding the new task.");
                         return false;
@@ -111,7 +108,6 @@
                     };
 
                     if (isRunning) {
-                        console.log('stoping');
                         this.stopTime();
                         this.props.updateTask(task);
                         this.setState({
@@ -124,17 +120,13 @@
                         });
 
                     } else {
-                        console.log('Starting...');
-
                         if (!response.data.exist) {
                             this.props.addTask(task)
                         }
                         if (lastTask && lastTask.name != name) {
                             this.resetTime();
                         } 
-                        // else {
-                        //     task.elapsed = elapsed_aux;
-                        // }
+
                         this.setState({
                             currentTask: task
                         });
@@ -202,7 +194,6 @@
             }
 
             updateTaskHandler(task) {
-                console.log('task update', task);
                 this.setState(prevState => {
                     const tasks = prevState.tasks.map((item) => {
                         if (item.id == task.id) {
@@ -217,7 +208,6 @@
 
             render() {
                 const { tasks, loading } = this.state;
-                // const reduceElapsed = (acc, task) => acc + task.elapsed;
                 const totalElapsed = tasks.reduce((acc, task) => acc + task.elapsed, 0); 
 
                 return (
