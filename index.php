@@ -114,11 +114,13 @@
                         console.log('stoping');
                         this.stopTime();
                         this.props.updateTask(task);
-                        // task['elapsed'] = elapsed;
-                        let task_aux = task;
-                        task_aux['elapsed'] = elapsed_aux;
                         this.setState({
-                            lastTask: task_aux
+                            lastTask: {
+                                id: task.id,
+                                name: task.name,
+                                elapsed: elapsed_aux,
+                                created_date: task.date
+                            }
                         });
 
                     } else {
