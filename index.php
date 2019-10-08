@@ -234,7 +234,7 @@
                             loading={loading}
                         />
                         <div>
-                            <h2>Summary - {totalElapsed} {totalElapsed < 60 ? ' seconds' : (totalElapsed < 3600 ? ' minutes' : ' hours')} in total </h2>
+                            <h2>Summary - {moment.duration(totalElapsed, 'seconds').format("H:mm:ss")}} {totalElapsed < 60 ? ' seconds' : (totalElapsed < 3600 ? ' minutes' : ' hours')} in total </h2>
                             <table border="true" style={{ border: '2px', borderColor: 'blue', borderCollapse: 'collapse', borderSpacing: 0, borderRadius: '5px', width: '100%' }}>
                             <thead>
                                 <tr>
@@ -253,7 +253,7 @@
                                 <tr key={`task-${task.id}`}>
                                     <td style={{ textAlign: 'center', padding: '15px' }}>{ task.id }</td>
                                     <td style={{ textAlign: 'center', padding: '15px' }}>{ task.name }</td>
-                                    <td style={{ textAlign: 'center', padding: '15px' }}>{ moment.duration(parseInt(task.elapsed), 'seconds').format("H:mm:ss")} {task.elapsed < 60 ? ' seconds' : (task.elapsed < 3600 ? ' minutes' : ' hours')}</td>
+                                    <td style={{ textAlign: 'center', padding: '15px' }}>{ moment.duration(task.elapsed, 'seconds').format("H:mm:ss")} {task.elapsed < 60 ? ' seconds' : (task.elapsed < 3600 ? ' minutes' : ' hours')}</td>
                                     <td style={{ textAlign: 'center', padding: '15px' }}>{ moment.unix(parseInt(task.created_date)).format("LLL") }</td>
                                 </tr>
                                 ))}
